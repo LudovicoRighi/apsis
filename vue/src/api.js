@@ -22,6 +22,10 @@ export function getRerunUrl(run_id) {
   return getUrl('runs', run_id, 'rerun')
 }
 
+export function getRiprovallUrl(run_id) {
+  return getUrl('runs', run_id, 'riprovall')
+}
+
 export function getRunUrl(run_id) {
   return getUrl('runs', run_id)
 }
@@ -56,6 +60,7 @@ export function getUrlForOperation(operation, run_id) {
   switch (operation) {
     case 'skip': return getSkipUrl(run_id)
     case 'start': return getStartUrl(run_id)
+    case 'riprovall': return getRiprovallUrl(run_id)
     case 'rerun': return getRerunUrl(run_id)
     case 'terminate': return getSignalUrl(run_id, 'SIGTERM')
     case 'kill': return getSignalUrl(run_id, 'SIGKILL')

@@ -1,4 +1,5 @@
 import asyncio
+from   collections import deque
 import logging
 import math
 from   mmap import PAGESIZE
@@ -25,6 +26,7 @@ from   .runs import get_bind_args
 from   .scheduled import ScheduledRuns
 from   .scheduler import Scheduler, get_runs_to_schedule
 from   .states import State
+from   .service.client import Client
 
 log = logging.getLogger(__name__)
 
@@ -724,6 +726,77 @@ class Apsis:
         self.run_log.info(
             new_run, f"scheduled as rerun of {run.run_id}", timestamp=timestamp)
         return new_run
+
+
+
+    async def riprovall(self, run, *, time=None):
+        """
+        Creates a riprovall of `run`.
+
+        :param time:
+          The time at which to schedule the riprovall.  If `None`, runs the riprovall
+          immediately.
+        """
+        log.info(f"riprovall starting from run: {run.run_id} at {time or 'now'}")
+        # mark all downstreams dependencies as failed
+        log.info("++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        # for jj in self.jobs.get_jobs():
+        #     log.info("######### CHECKING THE JOB WITH ID:")
+        #     log.info(jj.job_id)
+        #     log.info("######### THIS IS THE LIST OF CONDITIONS:")
+        #     for cc in jj.conds:
+        #         log.info(cc)
+
+        #     log.info("######### THIS IS THE LIST OF DIRECT DOWNSTREAMS:")
+        #     for dd in jj.downs:
+        #         log.info(dd)
+
+        #     log.info("------------------------------------------------")
+
+        # log.info("++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+        # root_job_id = run.inst.job_id
+
+        # queue = deque([root_job_id])
+        # to_rerun = set()
+
+        # while queue:
+        #     q_size = len(queue)
+        #     for i in range(q_size):
+        #         cur_id = queue.pop()
+        #         cur_job = self.jobs.get_job(cur_id)
+        #         if cur_id in to_rerun:
+        #             continue
+        #         queue.extend(list(cur_job.downs))        
+        #         to_rerun.add(cur_id)
+
+        # client = Client()
+        # log.info("000000000000000000000000000")
+        # log.info(to_rerun)        
+        # log.info(client)
+        # log.info("111111111111111111111111")
+
+        # # INVALIDATE ALL THE RUNS THAT HAS TO BE.
+        # for i, job_id in enumerate(to_rerun):
+        #     log.info(f"TO RERUN {i}: {job_id}")
+        #     job_runs = client.get_job_runs(job_id)
+        #     log.info("RRRRRRRRRRRRR")
+        #     log.info(len(job_runs))
+            
+
+        #     # for to_invalidate in client.get_job_runs(job_id):
+        #     #     log.info(to_invalidate)
+        #     #     log.info(type(to_invalidate))
+        #     #     # await self.mark(to_invalidate, State.failure)
+
+        # # Create the new runall.
+        # log.info(f"riprovall (i.e. with downstreams): {run.run_id} at {time or 'now'}")
+        # timestamp = now()
+        # new_run = Run(run.inst)
+        # await self.schedule(time, new_run)
+        # self.run_log.info(
+        #     new_run, f"scheduled as riprovall of {run.run_id}", timestamp=timestamp)
+        # return new_run
 
 
     async def send_signal(self, run, signal):

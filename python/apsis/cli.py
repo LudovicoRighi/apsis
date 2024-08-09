@@ -175,6 +175,30 @@ def main():
         "run_id", metavar="RUN-ID ...", nargs="+")
     add_dump_format_option(cmd)
 
+
+    #--- command: riprovall ----------------------------------------------
+
+    def cmd_riprovall(client, arg):
+        print(f"{client._Client__url()=}")
+        print(f"{client.riprovall('129')}")
+
+        for r in arg.run_id:
+            print(f"{r=}")
+        #     client.riprovall(r)
+        # for run in runs:
+        #     if args.format is None:
+        #         apsis.cmdline.print_run(run, con)
+        #     else:
+        #         dump_format(run, args.format)
+
+    cmd = parser.add_command(
+        "riprovall", cmd_riprovall,
+        description="Marks as failed and reruns a run together with all its downstream dependencies.")
+    cmd.add_argument(
+        "run_id", metavar="RUN-ID ...", nargs="+")
+    add_dump_format_option(cmd)
+
+
     #--- command: run ------------------------------------------------
 
     def cmd_run(client, args):

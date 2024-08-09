@@ -19,6 +19,10 @@ describe('Urls', () => {
     expect(api.getRerunUrl('r1234')).toEqual('/api/v1/runs/r1234/rerun')
   })
 
+  test('riprovall URL matches', () => {
+    expect(api.getRiprovallUrl('r1234')).toEqual('/api/v1/runs/r1234/riprovall')
+  })
+
   test('run URL matches', () => {
     expect(api.getRunUrl('r1234')).toEqual('/api/v1/runs/r1234')
   })

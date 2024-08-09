@@ -6,6 +6,7 @@ from   pathlib import Path
 import random
 import string
 import yaml
+from   collections import defaultdict
 
 from   .actions import Action
 from   .actions.schedule import successor_from_jso
@@ -24,7 +25,7 @@ class Job:
 
     def __init__(
             self, job_id, params=[], schedules=[], program=NoOpProgram(),
-            conds=[], actions=[], *, meta={}, ad_hoc=False
+            conds=[], actions=[], *, meta={}, ad_hoc=False, downs=[]
     ):
         """
         :param schedules:
@@ -40,6 +41,7 @@ class Job:
         self.schedules  = tupleize(schedules)
         self.program    = program
         self.conds      = tupleize(conds)
+        self.downs      = tupleize(downs)
         self.actions    = actions
         self.meta       = meta
         self.ad_hoc     = bool(ad_hoc)
@@ -131,6 +133,7 @@ def jso_to_job(jso, job_id):
     return Job(
         job_id, params, schedules, program,
         conds   =conds,
+        downs=[],
         actions =acts,
         meta    =metadata,
         ad_hoc  =ad_hoc,
@@ -255,6 +258,27 @@ def load_jobs_dir(path):
             log.debug(f"error: {path}: {exc}", exc_info=True)
             exc.job_id = job_id
             errors.append(exc)
+
+    # TODO: not very clear what to consider as dependency here (i.e. which states to use)
+    # log.warning(c.states)    
+    downstreams = defaultdict(list)
+    for job_id, spec in jobs.items():
+        # log.warning(job_id)
+        # log.warning("- - - - - - - - - - - ")
+        for c in spec.conds:
+            # log.warning(c.job_id)
+            # log.error(jobs[c.job_id].downs)
+            downstreams[c.job_id].append(job_id)
+
+        # log.warning("---------------------------------------------------")
+
+    for j_id, dds in downstreams.items():
+        log.warning(f"THE FOLLOWING IS THE LIST OF JOBS THAT ARE DOWNSTREAMS WITH RESPECT TO: {j_id}:")
+        log.warning(dds)
+    
+    for job_id in jobs.keys():
+        jobs[job_id].downs = tupleize(downstreams[job_id])
+
     if len(errors) > 0:
         raise JobErrors(f"errors loading jobs in {jobs_path}", errors)
     else:

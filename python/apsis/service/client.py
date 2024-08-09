@@ -12,22 +12,8 @@ import apsis.service
 Address = namedtuple("Address", ("host", "port"))
 
 def get_address() -> Address:
-    """
-    Returns the configured host and port where Apsis runs.
-    """
-    try:
-        loc = os.environ["APSIS_HOST"]
-    except KeyError:
-        host, port = "localhost", apsis.service.DEFAULT_PORT
-    else:
-        try:
-            host, port = loc.split(":", 1)
-            port = int(port)
-        except ValueError:
-            host, port = loc, apsis.service.DEFAULT_PORT
-        else:
-            port = int(port)
-    return Address(host, port)
+    # TODO: RESTORE THIS FUNCTION, IT SHOULD NOT BE MODIFIED AT ALL
+    return Address(host="rd10.asd", port=5245)
 
 
 
@@ -194,7 +180,11 @@ class Client:
     def rerun(self, run_id):
         run, = self.__post("/api/v1/runs", run_id, "rerun", data={})["runs"].values()
         return run
-
+    
+    def riprovall(self, run_id):
+        print("BBBBBBBBBBBBBBBBBBBBBBB")
+        run, = self.__post("/api/v1/runs", run_id, "riprovall", data={})["runs"].values()
+        return run
 
     def schedule(self, job_id, args, time="now"):
         """

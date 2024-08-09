@@ -244,6 +244,8 @@ async def job(request, job_id):
     return response_json(job_to_jso(request.app, job))
 
 
+
+# @API.route("/jobs/<job_id>/runs")
 @API.route("/jobs/<job_id:path>/runs")
 async def job_runs(request, job_id):
     job_id = match_job_id(request.app.apsis.jobs, unquote(job_id))
@@ -359,6 +361,23 @@ async def run_rerun(request, run_id):
     jso = runs_to_jso(request.app, ora.now(), [new_run])
     # Let UIs know to show the new run.
     jso["show_run_id"] = new_run.run_id
+    return response_json(jso)
+
+
+@API.route("/runs/<run_id>/riprovall", methods={"POST"})
+async def run_riprovall(request, run_id):
+    log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
+    print("YYYYYYYYYYYYYYYYYYYYYYYY")
+    jso = {
+        "ludo": "23",
+        "marco": "24",
+    }
+    # state = request.app.apsis
+    # _, run = state.run_store.get(run_id)
+    # new_run = await state.riprovall(run)
+    # jso = runs_to_jso(request.app, ora.now(), [new_run])
+    # # Let UIs know to show the new run.
+    # jso["show_run_id"] = new_run.run_id
     return response_json(jso)
 
 
