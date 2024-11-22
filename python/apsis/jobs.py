@@ -295,13 +295,15 @@ def load_jobs_dir(path):
 
     :return:
       The successfully loaded `JobsDir`.
+    :raise NotADirectoryError:
+      The provided path is not a directory.
     :raise JobsDirErrors:
       One or more errors while loading jobs.  The exception's `errors` attribute
       contains the errors; each has a `job_id` attribute.
     """
     jobs_path = Path(path)
     if not jobs_path.is_dir():
-        raise JobsDirErrors(f"not a directory: {jobs_path}", [])
+        raise NotADirectoryError(f"not a directory: {jobs_path}")
 
     jobs = {}
     errors = []
